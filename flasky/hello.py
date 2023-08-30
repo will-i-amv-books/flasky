@@ -91,5 +91,10 @@ def internal_server_error(e):
     return render_template('500.html'), 500
 
 
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db, 'User': User, 'Role': Role}
+
+
 if __name__ == '__main__':
     app.run()
