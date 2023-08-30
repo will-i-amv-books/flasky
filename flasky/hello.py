@@ -3,6 +3,7 @@ from datetime import datetime
 
 from flask import Flask, session, flash, redirect, render_template, url_for
 from flask_bootstrap import Bootstrap
+from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -25,11 +26,14 @@ app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+# Enable and use the 'App Password' in your Google account, 
+# your regular account password won't work.
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD') 
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 migrate = Migrate(app, db)
+mail = Mail(app)
 
 
 class Role(db.Model):
