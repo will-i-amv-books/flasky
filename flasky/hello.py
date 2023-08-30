@@ -7,10 +7,12 @@ from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
+from dotenv import load_dotenv
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
 
+load_dotenv()
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -18,7 +20,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.path.join(basedir, 'data.sqlite')
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'nJbYOWhilvn5^K1047V#'  # Use env vars in production
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
