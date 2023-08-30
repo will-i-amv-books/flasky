@@ -6,6 +6,7 @@ from flask_moment import Moment
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'nJbYOWhilvn5^K1047V#' # Use environmental variables in production
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 
