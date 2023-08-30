@@ -3,7 +3,7 @@ from datetime import datetime
 
 from flask import Flask, session, flash, redirect, render_template, url_for
 from flask_bootstrap import Bootstrap
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -26,6 +26,9 @@ app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_SUBJECT_PREFIX'] = '[Flasky]'
+app.config['MAIL_SENDER'] = f"Flasky Admin<{os.environ.get('MAIL_USERNAME')}>"
+app.config['MAIL_RECIPIENT'] = os.environ.get('MAIL_RECIPIENT')
 # Enable and use the 'App Password' in your Google account, 
 # your regular account password won't work.
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD') 
@@ -34,6 +37,18 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 migrate = Migrate(app, db)
 mail = Mail(app)
+
+
+def send_email(to, subject, template, **kwargs):
+    msg = Message(
+        app.config['MAIL_SUBJECT_PREFIX'] + subject,
+        sender=app.config['MAIL_SENDER'],
+        recipients=[to]
+    )
+    msg.body = render_template(template + '.txt', **kwargs)
+    msg.html = render_template(template + '.html', **kwargs)
+    print(msg.__dict__)
+    mail.send(msg)
 
 
 class Role(db.Model):
@@ -84,6 +99,13 @@ def index():
             db.session.add(user)
             db.session.commit()
             session['known'] = False
+            if app.config['MAIL_RECIPIENT']:
+                send_email(
+                    to=app.config['MAIL_RECIPIENT'],
+                    subject='New User', 
+                    template='mail/new_user', 
+                    user=user
+                )
         session['name'] = form.name.data
         form.name.data = ''
         return redirect(url_for('index'))
