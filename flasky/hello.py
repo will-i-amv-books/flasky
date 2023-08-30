@@ -3,6 +3,7 @@ from datetime import datetime
 
 from flask import Flask, session, flash, redirect, render_template, url_for
 from flask_bootstrap import Bootstrap
+from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -21,6 +22,7 @@ app.config['SECRET_KEY'] = 'nJbYOWhilvn5^K1047V#'  # Use env vars in production
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+migrate = Migrate(app, db)
 
 
 class Role(db.Model):
