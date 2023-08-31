@@ -9,6 +9,7 @@ from ..models import User
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+    app = current_app._get_current_object()
     form = NameForm()
     if not form.validate_on_submit():
         return render_template(
@@ -26,9 +27,9 @@ def index():
             db.session.add(user)
             db.session.commit()
             session['known'] = False
-            if current_app.config['MAIL_RECIPIENT']:
+            if app.config['MAIL_RECIPIENT']:
                 send_email(
-                    to=current_app.config['MAIL_RECIPIENT'],
+                    to=app.config['MAIL_RECIPIENT'],
                     subject='New User', 
                     template='mail/new_user', 
                     user=user
