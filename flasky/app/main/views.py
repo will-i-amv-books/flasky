@@ -1,10 +1,10 @@
 from flask import current_app, session, redirect, render_template, url_for
 
-from . import main
-from .. import db
-from .forms import NameForm
-from ..email import send_email
-from ..models import User
+from app import db
+from app.email import send_email
+from app.main import main
+from app.main.forms import NameForm
+from app.models import User
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -36,7 +36,7 @@ def index():
                 )
         session['name'] = form.name.data
         form.name.data = ''
-        return redirect(url_for('.index'))
+        return redirect(url_for('main.index'))
 
 
 @main.route('/user/<name>')
