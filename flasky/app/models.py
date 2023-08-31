@@ -1,3 +1,5 @@
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from . import db
 
 
@@ -8,7 +10,7 @@ class Role(db.Model):
     users = db.relationship('User', backref='role', lazy='dynamic')
 
     def __repr__(self):
-        return f'<Role {self.name}>'
+        return f"<Role '{self.name}'>"
 
 
 class User(db.Model):
@@ -19,7 +21,19 @@ class User(db.Model):
         unique=True,
         index=True
     )
+    password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f"<User '{self.username}'>"
+
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
