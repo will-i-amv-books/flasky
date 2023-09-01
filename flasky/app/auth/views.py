@@ -1,9 +1,10 @@
 from flask import render_template, redirect, request, url_for, flash
 from flask_login import login_user, login_required, logout_user 
 
-from . import auth
-from ..models import User
-from .forms import LoginForm
+from app import db
+from app.auth import auth
+from app.models import User
+from app.auth.forms import LoginForm, RegistrationForm
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -25,6 +26,23 @@ def login():
             if (next is None) or (not next.startswith('/')):
                 next = url_for('main.index')
             return redirect(next)
+
+
+@auth.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if not form.validate_on_submit():
+        return render_template('auth/register.html', form=form)
+    else:
+        user = User(
+            email=form.email.data,
+            username=form.username.data,
+            password=form.password.data
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash('You can now login.')
+        return redirect(url_for('auth.login'))
 
 
 @auth.route('/logout')
