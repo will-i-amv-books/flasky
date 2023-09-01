@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask
 from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -14,6 +15,8 @@ load_dotenv()
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy()
 bootstrap = Bootstrap()
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
 moment = Moment()
 mail = Mail()
 
@@ -25,6 +28,7 @@ def create_app(config_name):
     config_obj.init_app(app)
 
     bootstrap.init_app(app)
+    login_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
     db.init_app(app)
