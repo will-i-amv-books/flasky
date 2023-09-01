@@ -1,5 +1,5 @@
 email-validator==2.0.0.post2
-Flask==2.3.2
+Flask==2.2.5
 Flask-Bootstrap==3.3.7.1
 Flask-Login==0.6.2
 Flask-Mail==0.9.1
@@ -7,5 +7,5 @@ Flask-Migrate==4.0.4
 Flask-Moment==1.0.5
 Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.1.1
-itsdangerous==2.1.2
+itsdangerous==2.0.1
 python-dotenv==1.0.0
