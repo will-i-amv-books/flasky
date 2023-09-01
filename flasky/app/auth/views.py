@@ -21,11 +21,9 @@ def login():
             return redirect(url_for('auth.login'))
         else:
             login_user(user, form.remember_me.data)
-            next = (
-                request.args.get('next')
-                if (next is None) or (not next.startswith('/')) else
-                url_for('main.index')
-            )
+            next = request.args.get('next')
+            if (next is None) or (not next.startswith('/')):
+                next = url_for('main.index')
             return redirect(next)
 
 
