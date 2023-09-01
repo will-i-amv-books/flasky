@@ -5,7 +5,7 @@ from app import db
 from app.email import send_email
 from app.auth import auth
 from app.models import User
-from app.auth.forms import LoginForm, RegistrationForm
+from app.auth.forms import LoginForm, RegistrationForm, ChangePasswordForm
 
 
 @auth.before_app_request
@@ -106,3 +106,21 @@ def logout():
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('main.index'))
+
+
+@auth.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if not form.validate_on_submit():
+        return render_template("auth/change_password.html", form=form)
+    else:
+        if not current_user.verify_password(form.old_password.data):
+            flash('Invalid password.')
+            return redirect(url_for('auth.change_password'))
+        else:
+            current_user.password = form.password.data
+            db.session.add(current_user)
+            db.session.commit()
+            flash('Your password has been updated.')
+            return redirect(url_for('main.index'))
